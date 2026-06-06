@@ -1,16 +1,17 @@
 <nav class="sticky top-0 z-50 w-full border-b border-white/30 bg-white/70 backdrop-blur-md shadow-sm">
-    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+    <div class="w-full max-w-7xl mx-auto px-4 sm:px-4 lg:px-4 py-4 flex justify-between items-center">
         <a href="/" class="text-2xl font-extrabold text-primary tracking-tight">AuraStore</a>
 
 
         <div class="hidden md:flex gap-8 items-center">
-            <a href="/" class="font-medium text-slate-500 hover:text-primary transition-colors">Home</a>
-            <a href="/shop" class="font-medium text-slate-500 hover:text-primary transition-colors">Shop</a>
-            <a href="/about" class="font-medium text-slate-500 hover:text-primary transition-colors">About</a>
-            <a href="/account" class="font-medium text-slate-500 hover:text-primary transition-colors">Account</a>
+            <a href="/" class="font-medium {{ 'text-indigo-600 font-bold' if request.path == '/' else 'text-slate-500 hover:text-indigo-600' }} transition-colors">Home</a>
+            <a href="/shop" class="font-medium {{ 'text-indigo-600 font-bold' if request.path == '/shop' or request.path.startswith('/product') else 'text-slate-500 hover:text-indigo-600' }} transition-colors">Shop</a>
+            <a href="/about" class="font-medium {{ 'text-indigo-600 font-bold' if request.path == '/about' else 'text-slate-500 hover:text-indigo-600' }} transition-colors">About</a>
+            <a href="/account" class="font-medium {{ 'text-indigo-600 font-bold' if request.path == '/account' else 'text-slate-500 hover:text-indigo-600' }} transition-colors">Account</a>
         </div>
 
         <div class="flex items-center">
+            <a href="/login" class="mr-2 px-5 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-600/30 transition-all duration-300">Login</a>
             <a href="/cart"
                 class="relative flex items-center gap-2 font-semibold text-slate-800 hover:text-primary transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"

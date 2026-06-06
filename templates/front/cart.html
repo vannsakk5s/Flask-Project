@@ -34,38 +34,42 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {% set ns = namespace(subtotal=0) %}
+                        {% for item in cart_list %}
+                        {% set ns.subtotal = ns.subtotal + (item.price * item.qty) %}
                         <tr class="border-b border-slate-100">
                             <td class="py-4 px-4">
                                 <div class="flex items-center gap-4">
-                                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=200" alt="Product" class="w-16 h-16 object-cover rounded-lg bg-slate-200">
+                                    <img src="{{ item.image }}" alt="{{ item.title }}" class="w-16 h-16 object-cover rounded-lg bg-white p-1 border border-slate-100">
                                     <div>
-                                        <h4 class="font-semibold text-slate-900">Premium Smart Watch</h4>
-                                        <a href="#" class="text-sm text-red-500 hover:text-red-700">Remove</a>
+                                        <h4 class="font-semibold text-slate-900 line-clamp-2 max-w-[200px]" title="{{ item.title }}">{{ item.title }}</h4>
+                                        <a href="/cart/remove?product_id={{ item.id }}" class="text-sm text-red-500 hover:text-red-700">Remove</a>
                                     </div>
                                 </div>
                             </td>
                             <td class="py-4 px-4">
-                                <input type="number" class="w-20 px-3 py-2 rounded-md border border-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500" value="1" min="1">
+                                <div class="flex items-center gap-2">
+                                    <a href="/cart?product_id={{ item.id }}&qty=-1" class="w-8 h-8 flex items-center justify-center rounded-md bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900 transition-colors cursor-pointer" title="Decrease Quantity">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4" />
+                                        </svg>
+                                    </a>
+                                    <div class="w-12 px-2 py-1.5 rounded-md border border-slate-200 bg-slate-50 text-center font-medium">{{ item.qty }}</div>
+                                    <a href="/cart?product_id={{ item.id }}&qty=1" class="w-8 h-8 flex items-center justify-center rounded-md bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900 transition-colors cursor-pointer" title="Increase Quantity">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                                        </svg>
+                                    </a>
+                                </div>
                             </td>
-                            <td class="py-4 px-4 font-semibold text-slate-700">$299.00</td>
-                            <td class="py-4 px-4 font-bold text-indigo-600">$299.00</td>
+                            <td class="py-4 px-4 font-semibold text-slate-700">${{ "%.2f"|format(item.price) }}</td>
+                            <td class="py-4 px-4 font-bold text-indigo-600">${{ "%.2f"|format(item.price * item.qty) }}</td>
                         </tr>
+                        {% else %}
                         <tr>
-                            <td class="py-4 px-4">
-                                <div class="flex items-center gap-4">
-                                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=200" alt="Product" class="w-16 h-16 object-cover rounded-lg bg-slate-200">
-                                    <div>
-                                        <h4 class="font-semibold text-slate-900">Wireless Headphones</h4>
-                                        <a href="#" class="text-sm text-red-500 hover:text-red-700">Remove</a>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="py-4 px-4">
-                                <input type="number" class="w-20 px-3 py-2 rounded-md border border-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500" value="2" min="1">
-                            </td>
-                            <td class="py-4 px-4 font-semibold text-slate-700">$199.00</td>
-                            <td class="py-4 px-4 font-bold text-indigo-600">$398.00</td>
+                            <td colspan="4" class="py-12 text-center text-slate-500 font-medium">Your cart is empty. <a href="/shop" class="text-indigo-600 hover:underline">Continue shopping</a></td>
                         </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -73,21 +77,25 @@
             <!-- Order Summary -->
             <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 h-fit">
                 <h3 class="text-xl font-bold text-slate-900 mb-6">Order Summary</h3>
+                {% set subtotal = ns.subtotal if ns else 0 %}
+                {% set shipping = 15.00 if subtotal > 0 else 0 %}
+                {% set tax = subtotal * 0.08 %}
+                {% set total = subtotal + shipping + tax %}
                 <div class="flex justify-between mb-4 text-slate-600">
                     <span>Subtotal</span>
-                    <span class="font-semibold text-slate-900">$697.00</span>
+                    <span class="font-semibold text-slate-900">${{ "%.2f"|format(subtotal) }}</span>
                 </div>
                 <div class="flex justify-between mb-4 text-slate-600">
                     <span>Shipping</span>
-                    <span class="font-semibold text-slate-900">$15.00</span>
+                    <span class="font-semibold text-slate-900">${{ "%.2f"|format(shipping) }}</span>
                 </div>
                 <div class="flex justify-between mb-6 text-slate-600">
                     <span>Tax</span>
-                    <span class="font-semibold text-slate-900">$55.76</span>
+                    <span class="font-semibold text-slate-900">${{ "%.2f"|format(tax) }}</span>
                 </div>
                 <div class="flex justify-between pt-6 border-t border-slate-200">
                     <span class="text-lg font-bold text-slate-900">Total</span>
-                    <span class="text-xl font-bold text-indigo-600">$767.76</span>
+                    <span class="text-xl font-bold text-indigo-600">${{ "%.2f"|format(total) }}</span>
                 </div>
                 
                 <a href="/checkout" class="block w-full text-center mt-8 py-3 px-4 font-semibold rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors">

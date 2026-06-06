@@ -17,32 +17,39 @@
     <!-- Include the Navbar -->
     {% include 'front/share/navbar.html' %}
 
+    {# {{ product }}#}
     <!-- Main Content -->
     <main class="flex-1 w-full max-w-7xl mx-auto px-4 py-8">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mt-8">
             <!-- Product Image -->
-            <div class="bg-white/70 backdrop-blur-md rounded-2xl overflow-hidden shadow-sm border border-white/50">
-                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=800" alt="Premium Smart Watch" class="w-full h-auto object-cover">
+            <div class="bg-white/70 backdrop-blur-md rounded-2xl overflow-hidden shadow-sm border border-white/50 flex items-center justify-center p-8">
+                <img src="{{ product.image }}" alt="{{ product.title }}" class="max-w-full max-h-90 object-contain mix-blend-multiply">
             </div>
 
             <!-- Product Details -->
             <div class="py-4">
-                <h1 class="text-4xl font-extrabold text-slate-900 mb-4">Premium Smart Watch</h1>
-                <div class="text-3xl font-bold text-indigo-600 mb-6">$299.00</div>
-                
+                <h1 class="text-4xl font-extrabold text-slate-900 mb-4">{{ product.title }}</h1>
+                <div class="text-3xl font-bold text-indigo-600 mb-6">${{ product.price }}</div>
+
                 <p class="text-lg text-slate-500 mb-8 leading-relaxed">
-                    Experience the next level of smart technology with our Premium Smart Watch. Features include heart rate monitoring, GPS tracking, and a stunning AMOLED display that looks beautiful in any light.
+                    {{ product.description }}
                 </p>
 
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-slate-700 mb-2" for="quantity">Quantity</label>
-                    <input type="number" id="quantity" class="w-24 px-4 py-3 rounded-lg border border-slate-200 bg-white/80 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-colors" value="1" min="1">
-                </div>
+                <form action="/cart" method="GET">
+                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-slate-700 mb-2" for="quantity">Quantity</label>
+                        <input type="number" id="quantity" name="qty"
+                            class="w-24 px-4 py-3 rounded-lg border border-slate-200 bg-white/80 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-colors"
+                            value="1" min="1">
+                    </div>
 
-                <button class="w-full max-w-xs py-4 px-8 text-lg font-semibold rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-600/30 transition-all duration-300">
-                    Add to Cart
-                </button>
-                
+                    <button type="submit"
+                        class="w-full max-w-xs py-4 px-8 text-lg font-semibold rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-600/30 transition-all duration-300">
+                        Add to Cart
+                    </button>
+                </form>
+
                 <div class="mt-12 pt-8 border-t border-slate-200">
                     <h3 class="text-xl font-bold text-slate-900 mb-4">Product Specifications</h3>
                     <ul class="list-disc pl-6 text-slate-500 space-y-2">
@@ -54,6 +61,30 @@
                 </div>
             </div>
         </div>
+
+{#        {{ related_product }}#}
+        <!-- Related Products -->
+        <section class="mt-16 pt-8 border-t border-slate-200">
+            <h2 class="text-3xl font-bold mb-6 text-slate-900">Related Products</h2>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                {% for item in related_product %}
+                <div class="group bg-white/70 backdrop-blur-md border border-white/50 rounded-xl overflow-hidden shadow-md hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex flex-col">
+                    <a href="/product/{{ item.title }}" class="contents">
+                        <img src="{{ item.image }}" alt="{{ item.title }}" class="w-full h-64 object-contain bg-white p-4">
+                        <div class="p-6 flex flex-col flex-grow">
+                            <h3 class="text-lg font-semibold text-slate-900 mb-2 line-clamp-2">{{ item.title }}</h3>
+                            <div class="text-indigo-600 font-bold text-xl mb-4 mt-auto">${{ item.price }}</div>
+                        </div>
+                    </a>
+                    <div class="px-6 pb-6 mt-auto">
+                        <a href="/cart?product_id={{ item.id }}" class="block text-center w-full py-2 font-semibold rounded-md bg-indigo-600 text-white hover:bg-indigo-700 transition-colors">Add to Cart</a>
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </section>
     </main>
 
     <!-- Include the Footer -->

@@ -24,58 +24,37 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Checkout Form -->
             <div class="lg:col-span-2 bg-white/70 backdrop-blur-md rounded-2xl p-8 border border-white/50 shadow-sm">
-                <form>
+                <form id="checkout-form" method="POST" action="/checkout">
                     <h3 class="text-2xl font-bold text-slate-900 mb-6 pb-2 border-b border-slate-200">Shipping Information</h3>
                     
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-2" for="firstName">First Name</label>
-                            <input type="text" id="firstName" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50" required>
+                            <input type="text" id="firstName" name="firstName" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-2" for="lastName">Last Name</label>
-                            <input type="text" id="lastName" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50" required>
+                            <input type="text" id="lastName" name="lastName" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50" required>
                         </div>
                     </div>
                     
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-slate-700 mb-2" for="address">Address</label>
-                        <input type="text" id="address" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50" required>
+                        <input type="text" id="address" name="address" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50" required>
                     </div>
                     
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-2" for="city">City</label>
-                            <input type="text" id="city" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50" required>
+                            <input type="text" id="city" name="city" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-2" for="zip">Zip Code</label>
-                            <input type="text" id="zip" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50" required>
+                            <input type="text" id="zip" name="zip" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50" required>
                         </div>
                     </div>
 
-                    <h3 class="text-2xl font-bold text-slate-900 mb-6 pb-2 border-b border-slate-200">Payment Details</h3>
                     
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium text-slate-700 mb-2" for="cardName">Name on Card</label>
-                        <input type="text" id="cardName" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50" required>
-                    </div>
-                    
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium text-slate-700 mb-2" for="cardNumber">Card Number</label>
-                        <input type="text" id="cardNumber" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50" placeholder="0000 0000 0000 0000" required>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2" for="exp">Expiration (MM/YY)</label>
-                            <input type="text" id="exp" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50" placeholder="MM/YY" required>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2" for="cvv">CVV</label>
-                            <input type="text" id="cvv" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50" required>
-                        </div>
-                    </div>
                 </form>
             </div>
 
@@ -83,28 +62,45 @@
             <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 h-fit">
                 <h3 class="text-xl font-bold text-slate-900 mb-6">Order Summary</h3>
                 
-                <div class="flex items-center gap-4 pb-6 mb-6 border-b border-slate-200">
-                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=100" alt="Product" class="w-12 h-12 object-cover rounded-md bg-slate-200">
+                {% set ns = namespace(subtotal=0) %}
+                <div class="space-y-4 pb-6 mb-6 border-b border-slate-200 max-h-[300px] overflow-y-auto pr-2">
+                {% for item in cart_list %}
+                {% set ns.subtotal = ns.subtotal + (item.price * item.qty) %}
+                <div class="flex items-center gap-4">
+                    <img src="{{ item.image }}" alt="{{ item.title }}" class="w-12 h-12 object-cover rounded-md bg-slate-200 border border-slate-100">
                     <div class="flex-1">
-                        <h4 class="text-sm font-semibold text-slate-900">Premium Smart Watch (x1)</h4>
-                        <div class="text-sm font-bold text-slate-700">$299.00</div>
+                        <h4 class="text-sm font-semibold text-slate-900 line-clamp-1" title="{{ item.title }}">{{ item.title }} (x{{ item.qty }})</h4>
+                        <div class="text-sm font-bold text-slate-700">${{ "%.2f"|format(item.price * item.qty) }}</div>
                     </div>
                 </div>
+                {% else %}
+                <p class="text-sm text-slate-500">Your cart is empty.</p>
+                {% endfor %}
+                </div>
+                
+                {% set subtotal = ns.subtotal if ns else 0 %}
+                {% set shipping = 15.00 if subtotal > 0 else 0 %}
+                {% set tax = subtotal * 0.08 %}
+                {% set total = subtotal + shipping + tax %}
                 
                 <div class="flex justify-between mb-4 text-slate-600">
                     <span>Subtotal</span>
-                    <span class="font-semibold text-slate-900">$299.00</span>
+                    <span class="font-semibold text-slate-900">${{ "%.2f"|format(subtotal) }}</span>
+                </div>
+                <div class="flex justify-between mb-4 text-slate-600">
+                    <span>Shipping</span>
+                    <span class="font-semibold text-slate-900">${{ "%.2f"|format(shipping) }}</span>
                 </div>
                 <div class="flex justify-between mb-6 text-slate-600">
-                    <span>Shipping</span>
-                    <span class="font-semibold text-slate-900">$15.00</span>
+                    <span>Tax</span>
+                    <span class="font-semibold text-slate-900">${{ "%.2f"|format(tax) }}</span>
                 </div>
                 <div class="flex justify-between pt-6 border-t border-slate-200">
                     <span class="text-lg font-bold text-slate-900">Total</span>
-                    <span class="text-xl font-bold text-indigo-600">$314.00</span>
+                    <span class="text-xl font-bold text-indigo-600">${{ "%.2f"|format(total) }}</span>
                 </div>
                 
-                <button class="w-full mt-8 py-4 px-6 text-lg font-semibold rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-600/30 transition-all duration-300">
+                <button type="submit" form="checkout-form" class="w-full mt-8 py-4 px-6 text-lg font-semibold rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-600/30 transition-all duration-300 {% if not cart_list %}opacity-50 cursor-not-allowed{% endif %}" {% if not cart_list %}disabled{% endif %}>
                     Place Order
                 </button>
             </div>
